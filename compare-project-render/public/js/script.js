@@ -178,34 +178,38 @@ if (searchBtn) {
     };
 }
 
-// ✅ Improved matching logic
 function findTwoSimilarProducts(products, query) {
     const q = query.trim().toLowerCase();
 
-    let exactMatches = products.filter(p =>
+    // Step 1: Try strict matches by title or category
+    let matches = products.filter(p =>
         p.title.toLowerCase() === q ||
         p.category.toLowerCase() === q
     );
 
-    if (exactMatches.length < 2) {
-        exactMatches = products.filter(p =>
+    // Step 2: Partial match by title, description, or category
+    if (matches.length < 2) {
+        matches = products.filter(p =>
             p.title.toLowerCase().includes(q) ||
             p.description.toLowerCase().includes(q) ||
             p.category.toLowerCase().includes(q)
         );
     }
 
-    if (exactMatches.length < 2) {
-        const ranked = products.map(p => ({
-            product: p,
-            similarity: levenshteinDistance(p.title.toLowerCase(), q)
-        })).sort((a, b) => a.similarity - b.similarity);
-
-        exactMatches = ranked.slice(0, 2).map(r => r.product);
+    // Step 3: If still none, return empty — avoid weird results
+    if (matches.length === 0) {
+        return [];
     }
 
-    return exactMatches.slice(0, 2);
+    // Step 4: Return top 2 most similar if more than 2 found
+    const ranked = matches.map(p => ({
+        product: p,
+        similarity: levenshteinDistance(p.title.toLowerCase(), q)
+    })).sort((a, b) => a.similarity - b.similarity);
+
+    return ranked.slice(0, 2).map(r => r.product);
 }
+
 
 function levenshteinDistance(a, b) {
     const matrix = Array.from({ length: a.length + 1 }, () => []);
