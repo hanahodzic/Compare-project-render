@@ -215,7 +215,7 @@ document.getElementById("search-btn").addEventListener("click", async function()
     localStorage.setItem('lastSearchQuery', query);
 
     try {
-        const response = await fetch("http://localhost:3000/products");
+        const response = await fetch("/products");
   
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
