@@ -159,7 +159,7 @@ if (searchBtn) {
         localStorage.setItem('lastSearchQuery', query);
 
         try {
-            const response = await fetch("/products");
+            const response = await fetch("/api/products");
             if (!response.ok) throw new Error("API error: " + response.status);
             const data = await response.json();
             const products = data.products;
